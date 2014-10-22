@@ -112,9 +112,7 @@ The `adapters.xml` file for the Portfolio Demo, should look like:
   </adapters_conf>
 ```
 
-Please refer [here](http://www.lightstreamer.com/latest/Lightstreamer_Allegro-Presto-Vivace_5_1_Colosseo/Lightstreamer/DOCS-SDKs/General%20Concepts.pdf) for more details about Lightstreamer Adapters.
-
-**NOTE: At this stage, the demo is based on a version of LS Java Adapter SDK that is currently available only as a pre-release. Skip the notes below and refer to the [for_Lightstreamer_5.x](https://github.com/Weswit/Lightstreamer-example-Portfolio-adapter-java/releases/tag/for_Lightstreamer_5.1.2) tag for a demo version suitable for building and deploying.**
+Please refer [here](http://www.lightstreamer.com/docs/base/General%20Concepts.pdf) for more details about Lightstreamer Adapters.
 
 ## Install
 
@@ -141,18 +139,18 @@ To allow the two adapters to coexist within the same Adapter Set, please follow 
 ## Build
 To build your own version of `LS_portfolio_feed_simulator.jar`, `LS_portfolio_data_adapter.jar` and `LS_portfolio_metadata_adapter.jar`, instead of using the one provided in the `deploy.zip` file from the [Install](https://github.com/Weswit/Lightstreamer-example-Portfolio-adapter-java#install) section above, follow these steps:
 * Download this project.
-* Get the `ls-adapter-interface.jar`, `ls-generic-adapters.jar`, and `log4j-1.2.15.jar` files from the [latest Lightstreamer distribution](http://www.lightstreamer.com/download), and copy them into the `lib` directory.
+* Get the `ls-adapter-interface.jar` and `log4j-1.2.15.jar` files from the [latest Lightstreamer distribution](http://www.lightstreamer.com/download), and copy them into the `lib` directory.
 * Create the jars LS_portfolio_metadata_adapter.jar, LS_portfolio_feed_simulator.jar, and LS_portfolio_data_adapter.jar created by something like these commands
 ```sh
  >javac -source 1.7 -target 1.7 -nowarn -g -classpath compile_libs/log4j-1.2.15.jar -sourcepath src/src_feed -d tmp_classes src/src_feed/portfolio_demo/feed_simulator/Portfolio.java
  
  >jar cvf LS_portfolio_feed_simulator.jar -C tmp_classes src_feed
  
- >javac -source 1.7 -target 1.7 -nowarn -g -classpath compile_libs/log4j-1.2.15.jar;compile_libs/ls-adapter-interface/ls-adapter-interface.jar;compile_libs/ls-generic-adapters/ls-generic-adapters.jar;LS_portfolio_feed_simulator.jar -sourcepath src/src_portfolio -d tmp_classes src/src_portfolio/portfolio_demo/adapters/PortfolioDataAdapter.java
+ >javac -source 1.7 -target 1.7 -nowarn -g -classpath compile_libs/log4j-1.2.15.jar;compile_libs/ls-adapter-interface/ls-adapter-interface.jar;LS_portfolio_feed_simulator.jar -sourcepath src/src_portfolio -d tmp_classes src/src_portfolio/portfolio_demo/adapters/PortfolioDataAdapter.java
  
  >jar cvf LS_portfolio_data_adapter.jar -C tmp_classes src_portfolio
  
- >javac -source 1.7 -target 1.7 -nowarn -g -classpath compile_libs/log4j-1.2.15.jar;compile_libs/ls-adapter-interface/ls-adapter-interface.jar;compile_libs/ls-generic-adapters/ls-generic-adapters.jar;LS_portfolio_feed_simulator.jar;LS_portfolio_data_adapter.jar -sourcepath src/src_metadata -d tmp_classes src/src_metadata/portfolio_demo/adapters/PortfolioMetadataAdapter.java
+ >javac -source 1.7 -target 1.7 -nowarn -g -classpath compile_libs/log4j-1.2.15.jar;compile_libs/ls-adapter-interface/ls-adapter-interface.jar;LS_portfolio_feed_simulator.jar;LS_portfolio_data_adapter.jar -sourcepath src/src_metadata -d tmp_classes src/src_metadata/portfolio_demo/adapters/PortfolioMetadataAdapter.java
  
  >jar cvf LS_portfolio_metadata_adapter.jar -C tmp_classes src_metadata
 ```
@@ -176,5 +174,5 @@ To build your own version of `LS_portfolio_feed_simulator.jar`, `LS_portfolio_da
 
 ## Lightstreamer Compatibility Notes
 
-- Compatible with Lightstreamer SDK for Java Adapters since 6.0
-- For a version of this example compatible with Lightstreamer SDK for Java Adapters version 5.1.2, please refer to [this tag](https://github.com/Weswit/Lightstreamer-example-Portfolio-adapter-java/releases/tag/for_Lightstreamer_5.1.2).
+- Compatible with Lightstreamer SDK for Java In-Process Adapters since 6.0
+- For a version of this example compatible with Lightstreamer SDK for Java Adapters version 5.1, please refer to [this tag](https://github.com/Weswit/Lightstreamer-example-Portfolio-adapter-java/releases/tag/for_Lightstreamer_5.1.2).
