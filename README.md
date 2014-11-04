@@ -139,18 +139,19 @@ To allow the two adapters to coexist within the same Adapter Set, please follow 
 ## Build
 To build your own version of `LS_portfolio_feed_simulator.jar`, `LS_portfolio_data_adapter.jar` and `LS_portfolio_metadata_adapter.jar`, instead of using the one provided in the `deploy.zip` file from the [Install](https://github.com/Weswit/Lightstreamer-example-Portfolio-adapter-java#install) section above, follow these steps:
 * Download this project.
-* Get the `ls-adapter-interface.jar` and `log4j-1.2.15.jar` files from the [latest Lightstreamer distribution](http://www.lightstreamer.com/download), and copy them into the `lib` directory.
+* Get the `ls-adapter-interface.jar` file from the [latest Lightstreamer distribution](http://www.lightstreamer.com/download), and copy it into the `lib` folder.
+* Get the `log4j-1.2.17.jar` file from [Apache log4j](https://logging.apache.org/log4j/1.2/) and copy it into the `lib` folder.
 * Create the jars LS_portfolio_metadata_adapter.jar, LS_portfolio_feed_simulator.jar, and LS_portfolio_data_adapter.jar created by something like these commands
 ```sh
- >javac -source 1.7 -target 1.7 -nowarn -g -classpath compile_libs/log4j-1.2.15.jar -sourcepath src/src_feed -d tmp_classes src/src_feed/portfolio_demo/feed_simulator/Portfolio.java
+ >javac -source 1.7 -target 1.7 -nowarn -g -classpath compile_libs/log4j-1.2.17.jar -sourcepath src/src_feed -d tmp_classes src/src_feed/portfolio_demo/feed_simulator/Portfolio.java
  
  >jar cvf LS_portfolio_feed_simulator.jar -C tmp_classes src_feed
  
- >javac -source 1.7 -target 1.7 -nowarn -g -classpath compile_libs/log4j-1.2.15.jar;compile_libs/ls-adapter-interface/ls-adapter-interface.jar;LS_portfolio_feed_simulator.jar -sourcepath src/src_portfolio -d tmp_classes src/src_portfolio/portfolio_demo/adapters/PortfolioDataAdapter.java
+ >javac -source 1.7 -target 1.7 -nowarn -g -classpath compile_libs/log4j-1.2.17.jar;compile_libs/ls-adapter-interface/ls-adapter-interface.jar;LS_portfolio_feed_simulator.jar -sourcepath src/src_portfolio -d tmp_classes src/src_portfolio/portfolio_demo/adapters/PortfolioDataAdapter.java
  
  >jar cvf LS_portfolio_data_adapter.jar -C tmp_classes src_portfolio
  
- >javac -source 1.7 -target 1.7 -nowarn -g -classpath compile_libs/log4j-1.2.15.jar;compile_libs/ls-adapter-interface/ls-adapter-interface.jar;LS_portfolio_feed_simulator.jar;LS_portfolio_data_adapter.jar -sourcepath src/src_metadata -d tmp_classes src/src_metadata/portfolio_demo/adapters/PortfolioMetadataAdapter.java
+ >javac -source 1.7 -target 1.7 -nowarn -g -classpath compile_libs/log4j-1.2.17.jar;compile_libs/ls-adapter-interface/ls-adapter-interface.jar;LS_portfolio_feed_simulator.jar;LS_portfolio_data_adapter.jar -sourcepath src/src_metadata -d tmp_classes src/src_metadata/portfolio_demo/adapters/PortfolioMetadataAdapter.java
  
  >jar cvf LS_portfolio_metadata_adapter.jar -C tmp_classes src_metadata
 ```
