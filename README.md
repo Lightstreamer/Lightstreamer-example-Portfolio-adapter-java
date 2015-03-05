@@ -38,11 +38,26 @@ The `adapters.xml` file for the Basic Portfolio Demo, should look like:
 <!-- Mandatory. Define an Adapter Set and sets its unique ID. -->
 <adapters_conf id="PORTFOLIODEMO">
 
+    <!--
+      Not all configuration options of an Adapter Set are exposed by this file.
+      You can easily expand your configurations using the generic template,
+      `DOCS-SDKs/sdk_adapter_java_inprocess/doc/adapter_conf_template/adapters.xml`,
+      as a reference.
+    -->
+
+    <metadata_adapter_initialised_first>Y</metadata_adapter_initialised_first>
+
     <!-- Mandatory. Define the Metadata Adapter. -->
     <metadata_provider>
 
         <!-- Mandatory. Java class name of the adapter. -->
         <adapter_class>portfolio_demo.adapters.PortfolioMetadataAdapter</adapter_class>
+
+        <!-- Optional for PortfolioMetadataAdapter.
+             Configuration file for the Adapter's own logging.
+             Logging is managed through log4j. -->
+        <param name="log_config">../adapters_log_conf.xml</param>
+        <param name="log_config_refresh_seconds">10</param>
 
         <!-- Optional, managed by the inherited LiteralBasedProvider.
              See LiteralBasedProvider javadoc. -->
@@ -70,6 +85,15 @@ The `adapters.xml` file for the Portfolio Demo, should look like:
 
 <!-- Mandatory. Define an Adapter Set and sets its unique ID. -->
   <adapters_conf id="FULLPORTFOLIODEMO">
+  
+    <!--
+      Not all configuration options of an Adapter Set are exposed by this file.
+      You can easily expand your configurations using the generic template,
+      `DOCS-SDKs/sdk_adapter_java_inprocess/doc/adapter_conf_template/adapters.xml`,
+      as a reference.
+    -->
+
+    <metadata_adapter_initialised_first>Y</metadata_adapter_initialised_first>
 
     <!-- Mandatory. Define the Metadata Adapter. -->
     <metadata_provider>
@@ -78,6 +102,12 @@ The `adapters.xml` file for the Portfolio Demo, should look like:
 
       <!-- Mandatory. Java class name of the adapter. -->
       <adapter_class>portfolio_demo.adapters.PortfolioMetadataAdapter</adapter_class>
+
+      <!-- Optional for PortfolioMetadataAdapter.
+           Configuration file for the Adapter's own logging.
+           Logging is managed through log4j. -->
+      <param name="log_config">../adapters_log_conf.xml</param>
+      <param name="log_config_refresh_seconds">10</param>
 
       <!-- Optional, managed by the inherited LiteralBasedProvider.
            See LiteralBasedProvider javadoc. -->

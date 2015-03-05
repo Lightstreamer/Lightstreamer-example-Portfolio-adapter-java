@@ -87,16 +87,12 @@ public class PortfolioDataAdapter implements SmartDataProvider {
     }
 
     public void init(Map params, File configDir) throws DataProviderException {
-        String logConfig = (String) params.get("log_config");
-        if (logConfig != null) {
-            File logConfigFile = new File(configDir, logConfig);
-            String logRefresh = (String) params.get("log_config_refresh_seconds");
-            if (logRefresh != null) {
-                DOMConfigurator.configureAndWatch(logConfigFile.getAbsolutePath(), Integer.parseInt(logRefresh) * 1000);
-            } else {
-                DOMConfigurator.configure(logConfigFile.getAbsolutePath());
-            }
-        }
+ 
+        // Logging configuration for the demo is carried out in the init
+        // method of Metadata Adapter. In order to be sure that this method 
+        // is executed after log configuration was completed, this parameter 
+        // must be present in the Adapter Set configuration (adapters.xml):
+        // <metadata_adapter_initialised_first>Y</metadata_adapter_initialised_first>
         logger = Logger.getLogger("LS_demos_Logger.Portfolio");
 
         // Read the Adapter Set name, which is supplied by the Server as a parameter
