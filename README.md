@@ -177,17 +177,13 @@ To build your own version of `LS_portfolio_feed_simulator.jar`, `LS_portfolio_da
 * Get the `log4j-1.2.17.jar` file from [Apache log4j](https://logging.apache.org/log4j/1.2/) and copy it into the `lib` folder.
 * Create the jars LS_portfolio_metadata_adapter.jar, LS_portfolio_feed_simulator.jar, and LS_portfolio_data_adapter.jar created by something like these commands
 ```sh
- >javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar -sourcepath src/src_feed -d tmp_classes/feed src/src_feed/portfolio_demo/feed_simulator/Portfolio.java
- 
- >jar cvf LS_portfolio_feed_simulator.jar -C tmp_classes/feed .
- 
- >javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar;lib/ls-adapter-interface/ls-adapter-interface.jar;LS_portfolio_feed_simulator.jar -sourcepath src/src_portfolio -d tmp_classes/portfolio src/src_portfolio/portfolio_demo/adapters/PortfolioDataAdapter.java
- 
- >jar cvf LS_portfolio_data_adapter.jar -C tmp_classes/portfolio .
- 
- >javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar;lib/ls-adapter-interface/ls-adapter-interface.jar;LS_portfolio_feed_simulator.jar;LS_portfolio_data_adapter.jar -sourcepath src/src_metadata -d tmp_classes/metadata src/src_metadata/portfolio_demo/adapters/PortfolioMetadataAdapter.java
- 
- >jar cvf LS_portfolio_metadata_adapter.jar -C tmp_classes/metadata .
+ > mkdir tmp_classes/feed tmp_classes/portfolio tmp_classes/metadata
+ > javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar -sourcepath src/src_feed -d tmp_classes/feed src/src_feed/portfolio_demo/feed_simulator/Portfolio.java
+ > jar cvf LS_portfolio_feed_simulator.jar -C tmp_classes/feed .
+ > javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar;lib/ls-adapter-interface.jar;LS_portfolio_feed_simulator.jar -sourcepath src/src_portfolio -d tmp_classes/portfolio src/src_portfolio/portfolio_demo/adapters/PortfolioDataAdapter.java
+ > jar cvf LS_portfolio_data_adapter.jar -C tmp_classes/portfolio .
+ > javac -source 1.7 -target 1.7 -nowarn -g -classpath lib/log4j-1.2.17.jar;lib/ls-adapter-interface.jar;LS_portfolio_feed_simulator.jar;LS_portfolio_data_adapter.jar -sourcepath src/src_metadata -d tmp_classes/metadata src/src_metadata/portfolio_demo/adapters/PortfolioMetadataAdapter.java
+ > jar cvf LS_portfolio_metadata_adapter.jar -C tmp_classes/metadata .
 ```
 * copy the just compiled `LS_portfolio_feed_simulator.jar`, `LS_portfolio_data_adapter.jar`, and `LS_portfolio_metadata_adapter.jar` in the `adapters/Portfolio/lib` or `adapters/FullPortfolio/Portfolio/lib` folder of your Lightstreamer Server installation.
 
