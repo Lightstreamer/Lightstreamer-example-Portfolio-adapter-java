@@ -20,8 +20,8 @@ package portfolio_demo.adapters;
 import java.io.File;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import portfolio_demo.adapters.PortfolioDataAdapter;
 import portfolio_demo.feed_simulator.Portfolio;
@@ -71,6 +71,7 @@ public class PortfolioMetadataAdapter extends LiteralBasedProvider {
         //Call super's init method to handle basic Metadata Adapter features
         super.init(params,configDir);
 
+        /*
         String logConfig = (String) params.get("log_config");
         if (logConfig != null) {
             File logConfigFile = new File(configDir, logConfig);
@@ -81,7 +82,8 @@ public class PortfolioMetadataAdapter extends LiteralBasedProvider {
                 DOMConfigurator.configure(logConfigFile.getAbsolutePath());
             }
         }
-        logger = Logger.getLogger("LS_demos_Logger.Portfolio");
+        */
+        logger = LogManager.getLogger("LS_demos_Logger.Portfolio");
 
         // Read the Adapter Set name, which is supplied by the Server as a parameter
         this.adapterSetId = (String) params.get("adapters_conf.id");

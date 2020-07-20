@@ -20,7 +20,7 @@ package portfolio_demo.feed_simulator;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Simulates an external data feed that provides the contents of multiple

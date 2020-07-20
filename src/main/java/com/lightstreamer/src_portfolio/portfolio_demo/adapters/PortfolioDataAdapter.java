@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import portfolio_demo.feed_simulator.Portfolio;
 import portfolio_demo.feed_simulator.PortfolioFeedSimulator;
@@ -93,7 +93,7 @@ public class PortfolioDataAdapter implements SmartDataProvider {
         // is executed after log configuration was completed, this parameter 
         // must be present in the Adapter Set configuration (adapters.xml):
         // <metadata_adapter_initialised_first>Y</metadata_adapter_initialised_first>
-        logger = Logger.getLogger("LS_demos_Logger.Portfolio");
+        logger = LogManager.getLogger("LS_demos_Logger.Portfolio");
 
         // Read the Adapter Set name, which is supplied by the Server as a parameter
         String adapterSetId = (String) params.get("adapters_conf.id");
