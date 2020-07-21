@@ -206,5 +206,5 @@ To build your own version of `LS_portfolio_feed_simulator.jar`, `LS_portfolio_da
 
 ## Lightstreamer Compatibility Notes
 
-- Compatible with Lightstreamer SDK for Java In-Process Adapters since 6.0
+- Compatible with Lightstreamer SDK for Java In-Process Adapters since 6.0 to 7.2.
 - For a version of this example compatible with Lightstreamer SDK for Java Adapters version 5.1, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java/releases/tag/for_Lightstreamer_5.1.2).
