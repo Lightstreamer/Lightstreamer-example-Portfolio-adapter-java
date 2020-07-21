@@ -53,12 +53,6 @@ The `adapters.xml` file for the Basic Portfolio Demo, should look like:
         <!-- Mandatory. Java class name of the adapter. -->
         <adapter_class>portfolio_demo.adapters.PortfolioMetadataAdapter</adapter_class>
 
-        <!-- Optional for PortfolioMetadataAdapter.
-             Configuration file for the Adapter's own logging.
-             Logging is managed through log4j. -->
-        <param name="log_config">../adapters_log_conf.xml</param>
-        <param name="log_config_refresh_seconds">10</param>
-
         <!-- Optional, managed by the inherited LiteralBasedProvider.
              See LiteralBasedProvider javadoc. -->
         <param name="item_family_1">portfolio.*</param>
@@ -102,12 +96,6 @@ The `adapters.xml` file for the Portfolio Demo, should look like:
 
       <!-- Mandatory. Java class name of the adapter. -->
       <adapter_class>portfolio_demo.adapters.PortfolioMetadataAdapter</adapter_class>
-
-      <!-- Optional for PortfolioMetadataAdapter.
-           Configuration file for the Adapter's own logging.
-           Logging is managed through log4j. -->
-      <param name="log_config">../adapters_log_conf.xml</param>
-      <param name="log_config_refresh_seconds">10</param>
 
       <!-- Optional, managed by the inherited LiteralBasedProvider.
            See LiteralBasedProvider javadoc. -->
