@@ -19,7 +19,7 @@ Contains the source code for the Basic Portfolio Demo Data Adapter, a demo Adapt
 It can be referred to as a basic example for Data Adapter development.
 
 #### Portfolio MetaDataAdapter
-Contains the source code for a Metadata Adapter to be associated with the Portfolio Demo Data Adapter. This Metadata Adapter inherits from `LiteralBasedProvider` in [Lightstreamer - Reusable Metadata Adapters - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-ReusableMetadata-adapter-java) and just adds a simple support for order entry by implementing the NotifyUserMessage method, to handle "sendMessage" requests from the Portfolio Demo client.
+Contains the source code for a Metadata Adapter to be associated with the Portfolio Demo Data Adapter. This Metadata Adapter inherits from `LiteralBasedProvider` in [Lightstreamer Java In-Process Adapter SDK](https://github.com/Lightstreamer/Lightstreamer-lib-adapter-java-inprocess#literalbasedprovider-metadata-adapter) and just adds a simple support for order entry by implementing the NotifyUserMessage method, to handle "sendMessage" requests from the Portfolio Demo client.
 The communication to the Portfolio Feed Simulator, through the Portfolio Data Adapter, is handled here.
 
 It should not be used as a reference for a real case of client-originated message handling, as no guaranteed delivery and no clustering support is shown.
@@ -173,12 +173,13 @@ Assuming Maven is installed and available in your path you can build the demo by
 <!-- END RELATED_ENTRIES -->
 
 ### Related Projects
-* [Lightstreamer - Reusable Metadata Adapters - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-ReusableMetadata-adapter-java)
+
+* [LiteralBasedProvider Metadata Adapter](https://github.com/Lightstreamer/Lightstreamer-lib-adapter-java-inprocess#literalbasedprovider-metadata-adapter)
 * [Lightstreamer - Stock-List Demo - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-StockList-adapter-java)
 * [Lightstreamer - Portfolio Demo - .NET Adapter](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-dotnet)
 
 ## Lightstreamer Compatibility Notes
 
 - Compatible with Lightstreamer SDK for Java In-Process Adapters since 7.3.
-- For a version of this example compatible with Lightstreamer SDK for Java In-Process Adapters version6.0, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java/tree/pre_mvn).
+- For a version of this example compatible with Lightstreamer SDK for Java In-Process Adapters version 6.0, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java/tree/pre_mvn).
 - For a version of this example compatible with Lightstreamer SDK for Java In-Process Adapters version 5.1, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java/releases/tag/for_Lightstreamer_5.1.2).
