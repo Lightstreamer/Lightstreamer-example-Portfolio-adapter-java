@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package portfolio_demo.feed_simulator;
+package com.lightstreamer.examples.portfolio_demo.feed_simulator;
 
 
 import java.util.HashMap;

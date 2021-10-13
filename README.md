@@ -44,7 +44,7 @@ The `adapters.xml` file for the Basic Portfolio Demo, should look like:
     <metadata_provider>
 
         <!-- Mandatory. Java class name of the adapter. -->
-        <adapter_class>portfolio_demo.adapters.PortfolioMetadataAdapter</adapter_class>
+        <adapter_class>com.lightstreamer.examples.portfolio_demo.adapters.PortfolioMetadataAdapter</adapter_class>
 
         <!-- Optional, managed by the inherited LiteralBasedProvider.
              See LiteralBasedProvider javadoc. -->
@@ -57,7 +57,7 @@ The `adapters.xml` file for the Basic Portfolio Demo, should look like:
     <data_provider name="PORTFOLIO_ADAPTER">
 
         <!-- Mandatory. Java class name of the adapter. -->
-        <adapter_class>portfolio_demo.adapters.PortfolioDataAdapter</adapter_class>
+        <adapter_class>com.lightstreamer.examples.portfolio_demo.adapters.PortfolioDataAdapter</adapter_class>
 
     </data_provider>
 
@@ -81,7 +81,7 @@ The `adapters.xml` file for the Portfolio Demo, should look like:
       <install_dir>portfolio</install_dir>
 
       <!-- Mandatory. Java class name of the adapter. -->
-      <adapter_class>portfolio_demo.adapters.PortfolioMetadataAdapter</adapter_class>
+      <adapter_class>com.lightstreamer.examples.portfolio_demo.adapters.PortfolioMetadataAdapter</adapter_class>
 
       <!-- Optional, managed by the inherited LiteralBasedProvider.
            See LiteralBasedProvider javadoc. -->
@@ -99,7 +99,7 @@ The `adapters.xml` file for the Portfolio Demo, should look like:
       <install_dir>portfolio</install_dir>
 
       <!-- Mandatory. Java class name of the adapter. -->
-      <adapter_class>portfolio_demo.adapters.PortfolioDataAdapter</adapter_class>
+      <adapter_class>com.lightstreamer.examples.portfolio_demo.adapters.PortfolioDataAdapter</adapter_class>
 
     </data_provider>
 
@@ -109,7 +109,7 @@ The `adapters.xml` file for the Portfolio Demo, should look like:
       <install_dir>Stocklist</install_dir>
 
       <!-- Mandatory. Java class name of the adapter. -->
-      <adapter_class>stocklist_demo.adapters.StockQuotesDataAdapter</adapter_class>
+      <adapter_class>com.lightstreamer.examples.stocklist_demo.adapters.StockQuotesDataAdapter</adapter_class>
 
     </data_provider>
 

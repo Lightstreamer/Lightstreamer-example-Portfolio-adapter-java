@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package portfolio_demo.adapters;
+package com.lightstreamer.examples.portfolio_demo.adapters;
 
 import java.io.File;
 import java.util.HashMap;
@@ -25,9 +25,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import portfolio_demo.feed_simulator.Portfolio;
-import portfolio_demo.feed_simulator.PortfolioFeedSimulator;
-import portfolio_demo.feed_simulator.PortfolioListener;
+import com.lightstreamer.examples.portfolio_demo.feed_simulator.Portfolio;
+import com.lightstreamer.examples.portfolio_demo.feed_simulator.PortfolioFeedSimulator;
+import com.lightstreamer.examples.portfolio_demo.feed_simulator.PortfolioListener;
 
 import com.lightstreamer.interfaces.data.DataProviderException;
 import com.lightstreamer.interfaces.data.FailureException;

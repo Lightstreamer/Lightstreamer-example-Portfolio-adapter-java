@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package portfolio_demo.adapters;
+package com.lightstreamer.examples.portfolio_demo.adapters;
 
 
 import java.io.File;
@@ -23,9 +23,9 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import portfolio_demo.adapters.PortfolioDataAdapter;
-import portfolio_demo.feed_simulator.Portfolio;
-import portfolio_demo.feed_simulator.PortfolioFeedSimulator;
+import com.lightstreamer.examples.portfolio_demo.adapters.PortfolioDataAdapter;
+import com.lightstreamer.examples.portfolio_demo.feed_simulator.Portfolio;
+import com.lightstreamer.examples.portfolio_demo.feed_simulator.PortfolioFeedSimulator;
 
 import com.lightstreamer.adapters.metadata.LiteralBasedProvider;
 import com.lightstreamer.interfaces.metadata.CreditsException;

@@ -35,9 +35,6 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <mainClass>portfolio_demo.adapters.PortfolioMetadataAdapter</mainClass>
-        </configuration>
       </plugin>
          
     </plugins>
