@@ -20,6 +20,7 @@ package com.lightstreamer.examples.portfolio_demo.feed_simulator;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
@@ -40,13 +41,38 @@ public class PortfolioFeedSimulator {
     private final Logger logger;
 
     /**
+     * A static map, to be used by the Metadata Adapter to find the feed
+     * instance; this allows the Metadata Adapter to forward client order
+     * requests to the feed.
+     * Metadata and Data Adapter need to share the classloader.
+     * The map allows multiple instances of this Data Adapter to be included
+     * in different Adapter Sets and still share the classloader.
+     * Each instance is identified with the name of the related Adapter Set.
+     */
+    public static final ConcurrentHashMap<String, PortfolioFeedSimulator> feedMap =
+        new ConcurrentHashMap<String, PortfolioFeedSimulator>();
+
+    public static synchronized PortfolioFeedSimulator start(String adapterSetId) {
+        PortfolioFeedSimulator feed = PortfolioFeedSimulator.feedMap.get(adapterSetId);
+
+        if (feed == null) {
+            feed = new PortfolioFeedSimulator();
+
+            // Put the feed instance on a static map to be read by the Metadata Adapter
+            feedMap.put(adapterSetId, feed);
+        }
+        
+        return feed;
+    }
+
+    /**
      * Map of portfolios.
      */
     private final ConcurrentHashMap<String,Portfolio> portfolios =
         new ConcurrentHashMap<String,Portfolio>();
 
-    public PortfolioFeedSimulator(Logger logger) {
-        this.logger = logger;
+    public PortfolioFeedSimulator() {
+        logger = LogManager.getLogger("LS_demos_Logger.Portfolio");
     }
 
     public Portfolio getPortfolio(String portfolioId) {

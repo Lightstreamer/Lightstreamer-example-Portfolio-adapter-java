@@ -23,7 +23,6 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.lightstreamer.examples.portfolio_demo.adapters.PortfolioDataAdapter;
 import com.lightstreamer.examples.portfolio_demo.feed_simulator.Portfolio;
 import com.lightstreamer.examples.portfolio_demo.feed_simulator.PortfolioFeedSimulator;
 
@@ -54,7 +53,7 @@ public class PortfolioMetadataAdapter extends LiteralBasedProvider {
 
     /**
      * Unique identification of the related Portfolio Data Adapter instance;
-     * see feedMap on the PortfolioDataAdapter.
+     * see feedMap on the PortfolioFeedSimulator.
      */
     private String adapterSetId;
 
@@ -125,7 +124,7 @@ public class PortfolioMetadataAdapter extends LiteralBasedProvider {
             try {
                 // Get the PortfolioFeedSimulator instance to bind it with this
                 // Metadata Adapter and call buy/sell operations on it
-                this.portfolioFeed = PortfolioDataAdapter.feedMap
+                this.portfolioFeed = PortfolioFeedSimulator.feedMap
                         .get(this.adapterSetId);
             } catch (Throwable t) {
                 // It can happen if the Portfolio Data Adapter jar was not even

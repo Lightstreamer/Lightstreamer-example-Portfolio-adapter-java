@@ -77,18 +77,6 @@ public class PortfolioDataAdapter implements SmartDataProvider {
      */
     private PortfolioFeedSimulator feed;
 
-    /**
-     * A static map, to be used by the Metadata Adapter to find the feed
-     * instance; this allows the Metadata Adapter to forward client order
-     * requests to the feed.
-     * The map allows multiple instances of this Data Adapter to be included
-     * in different Adapter Sets. Each instance is identified with the name
-     * of the related Adapter Set; defining multiple instances in the same
-     * Adapter Set is not allowed.
-     */
-    public static final ConcurrentHashMap<String, PortfolioFeedSimulator> feedMap =
-        new ConcurrentHashMap<String, PortfolioFeedSimulator>();
-
     public PortfolioDataAdapter() {
     }
 
@@ -105,11 +93,7 @@ public class PortfolioDataAdapter implements SmartDataProvider {
         String adapterSetId = (String) params.get("adapters_conf.id");
 
         // "Bind" to the feed simulator
-        feed = new PortfolioFeedSimulator(logger);
-
-        // Put the feed instance on a static map to be read by the Metadata
-        // Adapter
-        feedMap.put(adapterSetId, feed);
+        feed = PortfolioFeedSimulator.start(adapterSetId);
 
         // Adapter ready
         logger.info("PortfolioDataAdapter ready");
