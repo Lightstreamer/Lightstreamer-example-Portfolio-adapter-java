@@ -159,6 +159,10 @@ public class Portfolio {
             final int oldVal = oldQty.intValue();
             final String stockId = stock;
 
+            //Clone the actual status of the portfolio
+            final HashMap<String,Integer> currentStatus =
+                (HashMap<String,Integer>) quantities.clone();
+
             //If we have a listener create a new Runnable to be used as a task to pass the
             //new update to the listener
             Runnable updateTask = new Runnable() {
@@ -166,7 +170,7 @@ public class Portfolio {
                     // call the update on the listener;
                     // in case the listener has just been detached,
                     // the listener should detect the case
-                    localListener.update(stockId, newVal, oldVal);
+                    localListener.update(stockId, newVal, oldVal, currentStatus);
                 }
             };
 

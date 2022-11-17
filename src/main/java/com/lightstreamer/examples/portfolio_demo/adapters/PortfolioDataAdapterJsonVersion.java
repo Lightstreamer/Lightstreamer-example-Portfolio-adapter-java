@@ -17,7 +17,10 @@
 package com.lightstreamer.examples.portfolio_demo.adapters;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,6 +33,7 @@ import com.lightstreamer.examples.portfolio_demo.feed_simulator.PortfolioFeedSim
 import com.lightstreamer.examples.portfolio_demo.feed_simulator.PortfolioListener;
 
 import com.lightstreamer.interfaces.data.DataProviderException;
+import com.lightstreamer.interfaces.data.DiffAlgorithm;
 import com.lightstreamer.interfaces.data.FailureException;
 import com.lightstreamer.interfaces.data.ItemEventListener;
 import com.lightstreamer.interfaces.data.SmartDataProvider;
@@ -45,7 +49,7 @@ import com.lightstreamer.interfaces.data.SubscriptionException;
  * an external feed; in this example, the feed provides a bean object
  * for each single portfolio instance.
  */
-public class PortfolioDataAdapter implements SmartDataProvider {
+public class PortfolioDataAdapterJsonVersion implements SmartDataProvider {
 
     /**
      * Private logger; a specific "LS_demos_Logger.Portfolio" category
@@ -77,7 +81,7 @@ public class PortfolioDataAdapter implements SmartDataProvider {
      */
     private PortfolioFeedSimulator feed;
 
-    public PortfolioDataAdapter() {
+    public PortfolioDataAdapterJsonVersion() {
     }
 
     public void init(Map params, File configDir) throws DataProviderException {
@@ -123,12 +127,17 @@ public class PortfolioDataAdapter implements SmartDataProvider {
                     + portfolioId);
         }
 
-        // Add the new item to the list of subscribed items
-        subscriptions.put(portfolioId, handle);
+        // declare support for JSON Patch for the JSON field
+        HashMap<String, DiffAlgorithm[]> decl = new HashMap<>();
+        decl.put("json", new DiffAlgorithm[] { DiffAlgorithm.JSONPATCH });
+        listener.smartDeclareFieldDiffOrder(handle, decl);
 
         // Create a new listener for the portfolio
         MyPortfolioListener listener = new MyPortfolioListener(
                 handle, portfolioId);
+
+        // Add the new item to the list of subscribed items
+        subscriptions.put(portfolioId, handle);
         listeners.put(portfolioId, listener);
 
         // Set the listener on the feed
@@ -162,57 +171,36 @@ public class PortfolioDataAdapter implements SmartDataProvider {
         return subscriptions.contains(handle);
     }
 
-    private void onUpdate(Object handle, String key, int qty) {
-        // An update was received from the feed
+    private void onUpdate(Object handle, String portfolioJson, boolean isSnapshot) {
         // Check for late calls
         if (isSubscribed(handle)) {
             // Create a new HashMap instance that will represent the update
             HashMap<String, String> update = new HashMap<String, String>();
-            // We have to set the key
-            update.put("key", key);
-            // The UPDATE command
-            update.put("command", "UPDATE");
-            // And the new quantity value
-            update.put("qty", String.valueOf(qty));
-
+            update.put("json", portfolioJson);
             // Pass everything to the kernel
-            listener.smartUpdate(handle, update, false);
+            listener.smartUpdate(handle, update, isSnapshot);
         }
+
     }
 
-    private void onDelete(Object handle, String key) {
-        // An update was received from the feed
-        // Check for late calls
-        if (isSubscribed(handle)) {
-            // Create a new HashMap instance that will represent the update
-            HashMap<String, String> update = new HashMap<String, String>();
-            // We just need the key
-            update.put("key", key);
-            // And the DELETE command
-            update.put("command", "DELETE");
+    private String toJson(String portfolioId, Map<String, Integer> currentStatus) {
+        // create json from portfolio
+        String portfolioJson = "{ \"" + portfolioId + "\": [";
 
-            // Pass everything to the kernel
-            listener.smartUpdate(handle, update, false);
+        Set<String> keys = currentStatus.keySet();
+        // order by item name (optional step)
+        List<String> keyList = new ArrayList<>(keys);
+        Collections.sort(keyList);
+        // Iterates through the Hash representing the actual status
+        for (String key : keyList) {
+            Integer qty = currentStatus.get(key);
+            portfolioJson += "{ \"symbol\": \"" + key + "\", \"quantity\": " + qty.intValue() + " },";
         }
-    }
-
-    private void onAdd(Object handle, String key, int qty, boolean snapshot) {
-        // An update for a new stock was received from the feed or the snapshot was read
-        // Check for late calls
-        if (isSubscribed(handle)) {
-            // Create a new HashMap instance that will represent the update
-            HashMap<String, String> update = new HashMap<String, String>();
-            // We have to set the key
-            update.put("key", key);
-            // The ADD command
-            update.put("command", "ADD");
-            // And the initial quantity
-            update.put("qty", String.valueOf(qty));
-
-            // Pass everything to the kernel
-            listener.smartUpdate(handle, update, snapshot);
+        if (! keyList.isEmpty()) {
+            portfolioJson = portfolioJson.substring(0, portfolioJson.length() - 1);
         }
-
+        portfolioJson += "]}";
+        return portfolioJson;
     }
 
     /**
@@ -232,34 +220,17 @@ public class PortfolioDataAdapter implements SmartDataProvider {
 
         public void update(String stock, int qty, int oldQty, Map<String, Integer> currentStatus) {
             // An update was received from the feed
-            if (qty <= 0) {
-                // If qty is 0 or less we have to delete the "row"
-                onDelete(this.handle, stock);
-                logger.debug(this.portfolioId + ": deleted " + stock);
-
-            } else if (oldQty == 0) {
-                // If oldQty value is 0 then this is a new stock
-                // in the portfolio so that we have to add a "row"
-                onAdd(this.handle, stock, qty, false);
-                logger.debug(this.portfolioId + ": added " + stock);
-
-            } else {
-                // A simple update
-                onUpdate(this.handle, stock, qty);
-                logger.debug(this.portfolioId + ": updated " + stock);
-            }
+            // create json from portfolio
+            String portfolioJson = toJson(portfolioId, currentStatus);
+            onUpdate(handle, portfolioJson, false);
         }
 
         public void onActualStatus(Map<String, Integer> currentStatus) {
             // The snapshot was received from the feed
-            Set<String> keys = currentStatus.keySet();
-            // Iterates through the Hash representing the actual status to send
-            // the snapshot to
-            // the kernel
-            for (String key : keys) {
-                onAdd(handle, key, currentStatus.get(key).intValue(), true);
-            }
-            
+            // create json from portfolio
+            String portfolioJson = toJson(portfolioId, currentStatus);
+            onUpdate(handle, portfolioJson, true);
+
             // Notify the end of snapshot to the kernel
             // Check for late calls
             if (isSubscribed(handle)) {

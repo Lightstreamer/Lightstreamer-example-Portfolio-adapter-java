@@ -37,8 +37,9 @@ public interface PortfolioListener {
      * Called on each new update on the state of the portfolio.
      * If oldQty is 0 means that the stock wasn't on the portfolio before;
      * if qty is 0 means that the stock was completely sold from the portfolio.
+     * The overall status of the portfolio is also supplied to the caller.
      */
-    public void update(String stock, int qty, int oldQty);
+    public void update(String stock, int qty, int oldQty, Map<String, Integer> currentStatus);
     
     /**
      * May be called if the whole portfolio has to be cleaned at once.
