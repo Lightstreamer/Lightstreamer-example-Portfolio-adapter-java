@@ -65,6 +65,12 @@ public class PortfolioDataAdapter implements SmartDataProvider {
      */
     private final ConcurrentHashMap<String, Object> subscriptions =
         new ConcurrentHashMap<String, Object>();
+    /**
+     * A map containing every active subscriptions;
+     * It associates each item name with the listener supplied to the feed.
+     */
+    private final ConcurrentHashMap<String, MyPortfolioListener> listeners =
+        new ConcurrentHashMap<String, MyPortfolioListener>();
 
     /**
      * The feed simulator.
@@ -124,6 +130,7 @@ public class PortfolioDataAdapter implements SmartDataProvider {
             throws SubscriptionException, FailureException {
 
         assert(! subscriptions.containsKey(portfolioId));
+        assert(! listeners.containsKey(portfolioId));
 
         Portfolio portfolio = feed.getPortfolio(portfolioId);
         if (portfolio == null) {
@@ -138,8 +145,10 @@ public class PortfolioDataAdapter implements SmartDataProvider {
         // Create a new listener for the portfolio
         MyPortfolioListener listener = new MyPortfolioListener(
                 handle, portfolioId);
+        listeners.put(portfolioId, listener);
+
         // Set the listener on the feed
-        portfolio.setListener(listener);
+        portfolio.addListener(listener);
 
         logger.info(portfolioId + " subscribed");
     }
@@ -148,15 +157,18 @@ public class PortfolioDataAdapter implements SmartDataProvider {
             throws SubscriptionException, FailureException {
 
         assert(subscriptions.containsKey(portfolioId));
+        assert(listeners.containsKey(portfolioId));
 
         Portfolio portfolio = feed.getPortfolio(portfolioId);
-        if (portfolio != null) {
-            // Remove the listener from the feed to not receive new
-            // updates
-            portfolio.removeListener();
-        }
+        assert(portfolio != null);
+
+        // Remove the listener from the feed to not receive new
+        // updates
+        portfolio.removeListener(listeners.get(portfolioId));
+
         // Remove the handle from the list of subscribed items
         subscriptions.remove(portfolioId);
+        listeners.remove(portfolioId);
 
         logger.info(portfolioId + " unsubscribed");
     }

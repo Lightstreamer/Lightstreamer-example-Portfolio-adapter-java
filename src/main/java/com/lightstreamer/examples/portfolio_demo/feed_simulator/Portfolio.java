@@ -17,7 +17,9 @@
 package com.lightstreamer.examples.portfolio_demo.feed_simulator;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -44,7 +46,7 @@ public class Portfolio {
     /**
      * Single listener for the contents.
      */
-    private PortfolioListener listener;
+    private final List<PortfolioListener> listeners;
 
     private final String id;
 
@@ -64,6 +66,7 @@ public class Portfolio {
         this.logger = logger;
         // create the executor for this instance;
         // the SingleThreadExecutor ensures a FIFO behaviour
+        listeners = new ArrayList<>();
         executor = Executors.newSingleThreadExecutor();
     }
 
@@ -148,9 +151,9 @@ public class Portfolio {
             quantities.put(stock, newQty);
         }
 
-        if (this.listener != null) {
+        for (PortfolioListener listener : listeners) {
             //copy the actual listener to a constant that will be used inside the inner class
-            final PortfolioListener localListener = this.listener;
+            final PortfolioListener localListener = listener;
             //copy the values to constant to be used inside the inner class
             final int newVal = newQty;
             final int oldVal = oldQty.intValue();
@@ -172,14 +175,14 @@ public class Portfolio {
         }
     }
 
-    public synchronized void setListener(PortfolioListener newListener) {
+    public synchronized void addListener(PortfolioListener newListener) {
         if (newListener == null) {
             //we don't accept a null parameter. to delete the actual listener
             //the removeListener method must be used
             return;
         }
         //Set the listener
-        this.listener = newListener;
+        this.listeners.add(newListener);
 
         logger.debug("Listener set on " + this.id);
 
@@ -204,27 +207,30 @@ public class Portfolio {
         executor.execute(statusTask);
     }
 
-    public synchronized void removeListener() {
+    public synchronized void removeListener(PortfolioListener listener) {
         //remove the listener
-        this.listener = null;
+        this.listeners.remove(listener);
     }
 
     // never called in the demo, just showing the feature
     public synchronized void empty() {
         logger.debug("Cleaning status " + this.id);
         
-        final PortfolioListener localListener = this.listener;
-        
         //remove all the quantities so that the portfolio will result empty
         quantities.clear();
         
-        Runnable clearTask = new Runnable() {
-            public void run() {
-                localListener.empty();
-            }
-        };
-        //We add the task on the executor to pass to the listener the actual status
-        executor.execute(clearTask);
+        for (PortfolioListener listener : listeners) {
+            //copy the actual listener to a constant that will be used inside the inner class
+            final PortfolioListener localListener = listener;
         
+            Runnable clearTask = new Runnable() {
+                public void run() {
+                    localListener.empty();
+                }
+            };
+
+            //We add the task on the executor to pass to the listener the actual status
+            executor.execute(clearTask);
+        }
     }
 }
