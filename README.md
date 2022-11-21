@@ -143,7 +143,7 @@ On the other hand, the `adapters.xml` file for the JSON Patch Portfolio Demo, sh
     </metadata_provider>
 
     <!-- Mandatory. Define the Data Adapter. -->
-    <data_provider name="PORTFOLIO_ADAPTER_JSON">
+    <data_provider name="PORTFOLIO_JSON_ADAPTER">
 
         <!-- Mandatory. Java class name of the adapter. -->
         <adapter_class>com.lightstreamer.examples.portfolio_demo.adapters.PortfolioDataAdapterJsonVersion</adapter_class>
@@ -175,7 +175,7 @@ Note that the Data Adapters needed by the various demos could also be deployed t
       <param name="modes_for_item_family_1">COMMAND</param>
 
       <param name="item_family_2">portfolio.*</param>
-      <param name="data_adapter_for_item_family_2">PORTFOLIO_ADAPTER_JSON</param>
+      <param name="data_adapter_for_item_family_2">PORTFOLIO_JSON_ADAPTER</param>
       <param name="modes_for_item_family_2">MERGE</param>
 
       <param name="item_family_3">item.*</param>
@@ -193,7 +193,7 @@ Note that the Data Adapters needed by the various demos could also be deployed t
     </data_provider>
 
     <!-- Mandatory. Define the Data Adapter. -->
-    <data_provider name="PORTFOLIO_ADAPTER_JSON">
+    <data_provider name="PORTFOLIO_JSON_ADAPTER">
 
         <!-- Mandatory. Java class name of the adapter. -->
         <adapter_class>com.lightstreamer.examples.portfolio_demo.adapters.PortfolioDataAdapterJsonVersion</adapter_class>
