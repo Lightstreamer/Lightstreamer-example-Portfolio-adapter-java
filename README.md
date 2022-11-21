@@ -241,7 +241,7 @@ To allow the two adapters to coexist within the same Adapter Set, please follow 
 If you want to install the JSON variant of the *Portfolio Demo* in your local Lightstreamer Server, follow these steps:
 * Download *Lightstreamer Server* (Lightstreamer Server comes with a free non-expiring demo license for 20 connected users) from [Lightstreamer Download page](http://www.lightstreamer.com/download.htm), and install it, as explained in the `GETTING_STARTED.TXT` file in the installation home directory.
 * Make sure that Lightstreamer Server is not running.
-* Get the `deploy.zip` file of the [proper release](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java/releases), unzip it, go to the `Deployment_LS` folder, and copy the `PortfolioJSON` folder into the `adapters` folder of your Lightstreamer Server installation.
+* Get the `deploy.zip` file of the [proper release](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java/releases), unzip it, go to the `Deployment_LS_JSON_version` folder, and copy the `PortfolioJSON` folder into the `adapters` folder of your Lightstreamer Server installation.
 * Launch Lightstreamer Server.
 * Test the Adapter, launching the [JSON Patch Portfolio Demo - HTML Client](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-client-javascript#jsonpatch-portfolio-demo---html-client), listed in [Clients Using This Adapter](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java#clients-using-this-adapter).
 
