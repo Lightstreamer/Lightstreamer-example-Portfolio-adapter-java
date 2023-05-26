@@ -23,7 +23,7 @@ It can be referred to as a basic example for Data Adapter development.
 The similar Data Adapter for the JSON variant is also included.
 
 #### Portfolio Metadata Adapter
-A Metadata Adapter to be associated with the Portfolio Demo Data Adapters. This Metadata Adapter inherits from `LiteralBasedProvider` in [Lightstreamer Java In-Process Adapter SDK](https://github.com/Lightstreamer/Lightstreamer-lib-adapter-java-inprocess#literalbasedprovider-metadata-adapter) and just adds a simple support for order entry by implementing the NotifyUserMessage method, to handle "sendMessage" requests from the Portfolio Demo client.
+A Metadata Adapter to be associated with the Portfolio Demo Data Adapters. This Metadata Adapter inherits from `LiteralBasedProvider` in [Lightstreamer Java In-Process Adapter SDK](https://github.com/Lightstreamer/Lightstreamer-lib-adapter-java-inprocess/tree/v7.4.1#literalbasedprovider-metadata-adapter) and just adds a simple support for order entry by implementing the NotifyUserMessage method, to handle "sendMessage" requests from the Portfolio Demo client.
 The communication to the Portfolio Feed Simulator is handled here.
 
 It should not be used as a reference for a real case of client-originated message handling, as no guaranteed delivery and no clustering support is shown.
@@ -213,9 +213,9 @@ Note that the Data Adapters needed by the various demos could also be deployed t
 
 
 <i>NOTE: not all configuration options of an Adapter Set are exposed by the files suggested above. 
-You can easily expand your configurations using the generic template, see the [Java In-Process Adapter Interface Project](https://github.com/Lightstreamer/Lightstreamer-lib-adapter-java-inprocess#configuration) for details.</i><br>
+You can easily expand your configurations using the generic template, see the [Java In-Process Adapter Interface Project](https://github.com/Lightstreamer/Lightstreamer-lib-adapter-java-inprocess/tree/v7.4.1#configuration) for details.</i><br>
 <br>
-Please refer [here](https://lightstreamer.com/docs/ls-server/latest/General%20Concepts.pdf) for more details about Lightstreamer Adapters.
+Please refer [here](https://lightstreamer.com/docs/ls-server/latest_7_3/General%20Concepts.pdf) for more details about Lightstreamer Adapters.
 
 ## Install
 
@@ -223,7 +223,7 @@ Please refer [here](https://lightstreamer.com/docs/ls-server/latest/General%20Co
 If you want to install a basic version of the *Portfolio Demo* in your local Lightstreamer Server, follow these steps:
 * Download *Lightstreamer Server* (Lightstreamer Server comes with a free non-expiring demo license for 20 connected users) from [Lightstreamer Download page](http://www.lightstreamer.com/download.htm), and install it, as explained in the `GETTING_STARTED.TXT` file in the installation home directory.
 * Make sure that Lightstreamer Server is not running.
-* Get the `deploy.zip` file of the [proper release](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java/releases), unzip it, go to the `Deployment_LS` folder, and copy the `Portfolio` folder into the `adapters` folder of your Lightstreamer Server installation.
+* Get the `deploy.zip` file of the ["Release for Lightstreamer 7.3" release](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java/releases), unzip it, go to the `Deployment_LS` folder, and copy the `Portfolio` folder into the `adapters` folder of your Lightstreamer Server installation.
 * Launch Lightstreamer Server.
 * Test the Adapter, launching the [Basic Portfolio Demo - HTML Client](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-client-javascript#basic-portfolio-demo---html-client), listed in [Clients Using This Adapter](#clients-using-this-adapter).
 
@@ -233,7 +233,7 @@ If you want to install a full version of the *Portfolio Demo* in your local Ligh
 To allow the two adapters to coexist within the same Adapter Set, please follow the steps below:
 * Download *Lightstreamer Server* (Lightstreamer Server comes with a free non-expiring demo license for 20 connected users) from [Lightstreamer Download page](http://www.lightstreamer.com/download.htm), and install it, as explained in the `GETTING_STARTED.TXT` file in the installation home directory.
 * Make sure that Lightstreamer Server is not running.
-* Get the `deploy.zip` file of the [proper release](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java/releases), unzip it, go to the `Full_Deployment_LS` folder, and copy the `FullPortfolio` folder into the `adapters` folder of your Lightstreamer Server installation.
+* Get the `deploy.zip` file of the ["Release for Lightstreamer 7.3" release](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java/releases), unzip it, go to the `Full_Deployment_LS` folder, and copy the `FullPortfolio` folder into the `adapters` folder of your Lightstreamer Server installation.
 * Launch Lightstreamer Server.
 * Test the Adapter, launching the [Portfolio Demo - HTML Client](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-client-javascript#portfolio-demo---html-client), listed in [Clients Using This Adapter](#clients-using-this-adapter).
 
@@ -241,7 +241,7 @@ To allow the two adapters to coexist within the same Adapter Set, please follow 
 If you want to install the JSON variant of the *Portfolio Demo* in your local Lightstreamer Server, follow these steps:
 * Download *Lightstreamer Server* (Lightstreamer Server comes with a free non-expiring demo license for 20 connected users) from [Lightstreamer Download page](http://www.lightstreamer.com/download.htm), and install it, as explained in the `GETTING_STARTED.TXT` file in the installation home directory.
 * Make sure that Lightstreamer Server is not running.
-* Get the `deploy.zip` file of the [proper release](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java/releases), unzip it, go to the `Deployment_LS_JSON_version` folder, and copy the `PortfolioJSON` folder into the `adapters` folder of your Lightstreamer Server installation.
+* Get the `deploy.zip` file of the ["Release for Lightstreamer 7.3" release](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java/releases), unzip it, go to the `Deployment_LS_JSON_version` folder, and copy the `PortfolioJSON` folder into the `adapters` folder of your Lightstreamer Server installation.
 * Launch Lightstreamer Server.
 * Test the Adapter, launching the [JSON Patch Portfolio Demo - HTML Client](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-client-javascript#jsonpatch-portfolio-demo---html-client), listed in [Clients Using This Adapter](#clients-using-this-adapter).
 
@@ -281,7 +281,7 @@ Assuming Maven is installed and available in your path you can build the demo by
 
 ## Lightstreamer Compatibility Notes
 
-- Compatible with Lightstreamer SDK for Java In-Process Adapters since 7.4.1.
+- Compatible with Lightstreamer SDK for Java In-Process Adapters version 7.4.x.
 - For a version of this example compatible with Lightstreamer SDK for Java In-Process Adapters version 7.3, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java/tree/pre_json).
 - For a version of this example compatible with Lightstreamer SDK for Java In-Process Adapters version 6.0, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java/tree/pre_mvn).
 - For a version of this example compatible with Lightstreamer SDK for Java In-Process Adapters version 5.1, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java/releases/tag/for_Lightstreamer_5.1.2).
