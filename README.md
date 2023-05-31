@@ -50,6 +50,12 @@ The `adapters.xml` file for the Basic Portfolio Demo, should look like:
         <!-- Mandatory. Java class name of the adapter. -->
         <adapter_class>com.lightstreamer.examples.portfolio_demo.adapters.PortfolioMetadataAdapter</adapter_class>
 
+        <!-- configure the dedicated pool for notifyUserMessage call, see source code of PortfolioMetadataAdapter -->
+        <messages_pool>
+            <max_pending_requests>100</max_pending_requests>
+            <max_queue>100</max_queue>
+        </messages_pool>
+
         <!-- Optional, managed by the inherited LiteralBasedProvider.
              See LiteralBasedProvider javadoc. -->
         <param name="item_family_1">portfolio.*</param>
@@ -86,6 +92,12 @@ The `adapters.xml` file for the Portfolio Demo, should look like:
 
       <!-- Mandatory. Java class name of the adapter. -->
       <adapter_class>com.lightstreamer.examples.portfolio_demo.adapters.PortfolioMetadataAdapter</adapter_class>
+
+      <!-- configure the dedicated pool for notifyUserMessage call, see source code of PortfolioMetadataAdapter -->
+      <messages_pool>
+          <max_pending_requests>100</max_pending_requests>
+          <max_queue>100</max_queue>
+      </messages_pool>
 
       <!-- Optional, managed by the inherited LiteralBasedProvider.
            See LiteralBasedProvider javadoc. -->
@@ -135,6 +147,12 @@ On the other hand, the `adapters.xml` file for the JSON Patch Portfolio Demo, sh
         <!-- Mandatory. Java class name of the adapter. -->
         <adapter_class>com.lightstreamer.examples.portfolio_demo.adapters.PortfolioMetadataAdapter</adapter_class>
 
+        <!-- configure the dedicated pool for notifyUserMessage call, see source code of PortfolioMetadataAdapter -->
+        <messages_pool>
+            <max_pending_requests>100</max_pending_requests>
+            <max_queue>100</max_queue>
+        </messages_pool>
+
         <!-- Optional, managed by the inherited LiteralBasedProvider.
              See LiteralBasedProvider javadoc. -->
         <param name="item_family_1">portfolio.*</param>
@@ -167,6 +185,12 @@ Note that the Data Adapters needed by the various demos could also be deployed t
 
       <!-- Mandatory. Java class name of the adapter. -->
       <adapter_class>com.lightstreamer.examples.portfolio_demo.adapters.PortfolioMetadataAdapter</adapter_class>
+
+      <!-- configure the dedicated pool for notifyUserMessage call, see source code of PortfolioMetadataAdapter -->
+      <messages_pool>
+          <max_pending_requests>100</max_pending_requests>
+          <max_queue>100</max_queue>
+      </messages_pool>
 
       <!-- Optional, managed by the inherited LiteralBasedProvider.
            See LiteralBasedProvider javadoc. -->

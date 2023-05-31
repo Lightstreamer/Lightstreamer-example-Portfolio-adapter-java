@@ -19,6 +19,10 @@ package com.lightstreamer.examples.portfolio_demo.adapters;
 
 import java.io.File;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -98,6 +102,8 @@ public class PortfolioMetadataAdapter extends LiteralBasedProvider {
         logger.info("PortfolioMetadataAdapter ready");
     }
 
+    private static ExecutorService messageProcessingPool = Executors.newCachedThreadPool();
+
     /**
      * Triggered by a client "sendMessage" call.
      * The message encodes an order entry request by the client.
@@ -105,18 +111,37 @@ public class PortfolioMetadataAdapter extends LiteralBasedProvider {
      * we accept messages from any user to modify any portfolio;
      * session information is ignored too.
      */
-    public void notifyUserMessage(String user, String session, String message)
+    public CompletionStage<String> notifyUserMessage(String user, String session, String message)
             throws NotificationException, CreditsException {
+
+        //NOTE: since the order processing is potentially blocking (in a real scenario), we have 
+        //configured a dedicated ExecutorService. Moreover, to provide backpressure to the Server
+        //when the number of pending operations is too high, we have properly configured the
+        //messages thread pool in the adapters.xml configuration file for this adapter.
 
         if (message == null) {
             logger.warn("Null message received");
             throw new NotificationException("Null message received");
         }
 
-        String[] pieces = message.split("\\|");
+        CompletableFuture<String> future = new CompletableFuture<>();
+        messageProcessingPool.execute(() -> {
+            try {
+                String[] pieces = message.split("\\|");
+                this.loadPortolioFeed();
+                this.handlePortfolioMessage(pieces,message);
+                future.complete(null);
+            } catch (CreditsException e) {
+                future.completeExceptionally(e);
+            } catch (NotificationException e) {
+                future.completeExceptionally(e);
+            } catch (Throwable t) {
+                future.completeExceptionally(t);
+            }
+            assert (future.isDone());
+        });
 
-        this.loadPortolioFeed();
-        this.handlePortfolioMessage(pieces,message);
+        return future;
     }
 
     private void loadPortolioFeed() throws CreditsException {
