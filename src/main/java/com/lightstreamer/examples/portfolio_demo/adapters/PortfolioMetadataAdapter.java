@@ -20,7 +20,6 @@ package com.lightstreamer.examples.portfolio_demo.adapters;
 import java.io.File;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -111,7 +110,7 @@ public class PortfolioMetadataAdapter extends LiteralBasedProvider {
      * we accept messages from any user to modify any portfolio;
      * session information is ignored too.
      */
-    public CompletionStage<String> notifyUserMessage(String user, String session, String message)
+    public CompletableFuture<String> notifyUserMessage(String user, String session, String message)
             throws NotificationException, CreditsException {
 
         //NOTE: since the order processing is potentially blocking (in a real scenario), we have 
