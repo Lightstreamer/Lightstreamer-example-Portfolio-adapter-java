@@ -202,16 +202,22 @@ public class PortfolioMetadataAdapter extends LiteralBasedProvider {
             throw new CreditsException(0, "Portfolio not available",
                     "Portfolio not available");
         }
-        try {
-            if (operation[0].equals("BUY")) {
+        if (operation[0].equals("BUY")) {
+            try {
                 // Call the buy operation on the selected portfolio
                 portfolio.buy(operation[2], qty);
-            } else if (operation[0].equals("SELL")) {
+            } catch (Exception e) {
+                throw new CreditsException(1, e.getMessage());
+            }
+        } else if (operation[0].equals("SELL")) {
+            try {
                 // Call the sell operation on the selected portfolio
                 portfolio.sell(operation[2], qty);
+            } catch (Exception e) {
+                throw new CreditsException(1, e.getMessage());
             }
-        } catch (Exception e) {
-            throw new CreditsException(1, e.getMessage());
+        } else {
+            throw new NotificationException("Wrong operation specified");
         }
     }
 
