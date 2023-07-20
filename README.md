@@ -24,6 +24,7 @@ The similar Data Adapter for the JSON variant is also included.
 
 #### Portfolio Metadata Adapter
 A Metadata Adapter to be associated with the Portfolio Demo Data Adapters. This Metadata Adapter inherits from `LiteralBasedProvider` in [Lightstreamer Java In-Process Adapter SDK](https://github.com/Lightstreamer/Lightstreamer-lib-adapter-java-inprocess#literalbasedprovider-metadata-adapter) and just adds a simple support for order entry by implementing the NotifyUserMessage method, to handle "sendMessage" requests from the Portfolio Demo client.
+A confirmation response is sent by NotifyUserMessage to the client.
 The communication to the Portfolio Feed Simulator is handled here.
 
 It should not be used as a reference for a real case of client-originated message handling, as no guaranteed delivery and no clustering support is shown.

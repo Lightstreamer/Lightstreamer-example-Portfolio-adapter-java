@@ -129,7 +129,7 @@ public class PortfolioMetadataAdapter extends LiteralBasedProvider {
                 String[] pieces = message.split("\\|");
                 this.loadPortolioFeed();
                 this.handlePortfolioMessage(pieces,message);
-                future.complete(null);
+                future.complete("SUBMITTED");
             } catch (CreditsException e) {
                 future.completeExceptionally(e);
             } catch (NotificationException e) {
