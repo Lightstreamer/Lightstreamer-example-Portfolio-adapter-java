@@ -20,6 +20,7 @@ package com.lightstreamer.examples.portfolio_demo.adapters;
 import java.io.File;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -29,36 +30,34 @@ import org.apache.logging.log4j.Logger;
 import com.lightstreamer.examples.portfolio_demo.feed_simulator.Portfolio;
 import com.lightstreamer.examples.portfolio_demo.feed_simulator.PortfolioFeedSimulator;
 
-import com.lightstreamer.adapters.metadata.LiteralBasedProvider;
-import com.lightstreamer.interfaces.metadata.CreditsException;
-import com.lightstreamer.interfaces.metadata.ItemsException;
-import com.lightstreamer.interfaces.metadata.MetadataProviderException;
-import com.lightstreamer.interfaces.metadata.NotificationException;
+import com.lightstreamer.adapter.common.InitException;
+import com.lightstreamer.adapter.metadata.CreditsException;
+import com.lightstreamer.adapter.metadata.LoginInfo;
+import com.lightstreamer.adapter.metadata.MessageException;
+import com.lightstreamer.adapter.metadata.MetadataAdapter;
+import com.lightstreamer.adapter.metadata.SessionRequestHandler;
+import com.lightstreamer.adapter.metadata.SubscriptionHandler;
+import com.lightstreamer.adapter.metadata.SubscriptionInfo;
 
 /**
  * Implements a simple Metadata Adapter suitable for managing client
  * requests to both the sample Quote Data Adapter and the sample Portfolio
  * Data Adapter.
- * It inherits from the LiteralBasedProvider, which is enough for all
- * demo clients. In addition, it implements the NotifyUserMessage method,
+ * It implements MetadataAdapter directly, which is enough for all
+ * demo clients. In addition, it implements the userMessageAsync method,
  * in order to handle "sendMessage" requests from the Portfolio Demo
  * client. This allows the Portfolio Demo client to use "sendMessage"
  * in order to submit buy/sell orders to the Portfolio Feed Simulator.
  * The communication to the Portfolio Feed Simulator, through the
  * Portfolio Data Adapter, is handled here.
  */
-public class PortfolioMetadataAdapter extends LiteralBasedProvider {
+public class PortfolioMetadataAdapter implements MetadataAdapter {
 
     /**
      * The associated feed to which buy and sell operations will be forwarded.
+     * Created by this Metadata Adapter and shared with the Data Adapters.
      */
-    private volatile PortfolioFeedSimulator portfolioFeed;
-
-    /**
-     * Unique identification of the related Portfolio Data Adapter instance;
-     * see feedMap on the PortfolioFeedSimulator.
-     */
-    private String adapterSetId;
+    private PortfolioFeedSimulator portfolioFeed;
 
     /**
      * Private logger; a specific "LS_demos_Logger.Portfolio" category
@@ -66,13 +65,13 @@ public class PortfolioMetadataAdapter extends LiteralBasedProvider {
      */
     private Logger logger;
 
+    private final ExecutorService messageProcessingPool = Executors.newCachedThreadPool();
+
     public PortfolioMetadataAdapter() {
     }
 
-    public void init(Map params, File configDir) throws MetadataProviderException {
-        //Call super's init method to handle basic Metadata Adapter features
-        super.init(params,configDir);
-
+    @Override
+    public void init(Map<String, String> params, File configDir) throws InitException {
         /*
         String logConfig = (String) params.get("log_config");
         if (logConfig != null) {
@@ -87,137 +86,148 @@ public class PortfolioMetadataAdapter extends LiteralBasedProvider {
         */
         logger = LogManager.getLogger("LS_demos_Logger.Portfolio");
 
-        // Read the Adapter Set name, which is supplied by the Server as a parameter
-        this.adapterSetId = (String) params.get("adapters_conf.id");
-
-        /*
-         * Note: the PortfolioFeedSimulator instance cannot be looked for here
-         * to initialize the "portfolioFeed" variable, because the Portfolio
-         * Data Adapter may not be loaded and initialized at this moment.
-         * We need to wait until the first "sendMessage" occurrence;
-         * then we can store the reference for later use.
-         */
+        // Create the feed simulator instance, owned by this Metadata Adapter
+        portfolioFeed = PortfolioFeedSimulator.create();
 
         logger.info("PortfolioMetadataAdapter ready");
     }
 
-    private static ExecutorService messageProcessingPool = Executors.newCachedThreadPool();
+    @Override
+    public void onDataAdapterAvailable(String dataAdapterName, Object dataAdapter) {
+        if (dataAdapter instanceof PortfolioDataAdapter) {
+            ((PortfolioDataAdapter) dataAdapter).setFeed(portfolioFeed);
+            logger.info("Feed shared with PortfolioDataAdapter '" + dataAdapterName + "'");
+        } else if (dataAdapter instanceof PortfolioDataAdapterJsonVersion) {
+            ((PortfolioDataAdapterJsonVersion) dataAdapter).setFeed(portfolioFeed);
+            logger.info("Feed shared with PortfolioDataAdapterJsonVersion '" + dataAdapterName + "'");
+        }
+        // Other Data Adapters (e.g. StockList) are ignored
+    }
+
+    @Override
+    public CompletionStage<SessionRequestHandler> loginAsync(LoginInfo loginInfo) {
+        //////////////////////////////////////////////////////////////////////////
+        // WARNING: No authentication logic is implemented; any login is accepted.
+        // This is suitable for demos only and MUST NOT be used in production.
+        //////////////////////////////////////////////////////////////////////////
+        return CompletableFuture.completedFuture(new MySessionRequestHandler());
+    }
+
+    @Override
+    public void shutdown() {
+        messageProcessingPool.shutdownNow();
+    }
 
     /**
-     * Triggered by a client "sendMessage" call.
-     * The message encodes an order entry request by the client.
-     * In this basic implementation, the user is ignored,
-     * we accept messages from any user to modify any portfolio;
-     * session information is ignored too.
+     * Inner class that handles session requests.
      */
-    public CompletableFuture<String> notifyUserMessage(String user, String session, String message)
-            throws NotificationException, CreditsException {
+    private class MySessionRequestHandler implements SessionRequestHandler {
 
-        //NOTE: since the order processing is potentially blocking (in a real scenario), we have 
-        //configured a dedicated ExecutorService. Moreover, to provide backpressure to the Server
-        //when the number of pending operations is too high, we have properly configured the
-        //messages thread pool in the adapters.xml configuration file for this adapter.
-
-        if (message == null) {
-            logger.warn("Null message received");
-            throw new NotificationException("Null message received");
+        @Override
+        public Double getAllowedMaxBandwidth() {
+            return null;
         }
 
-        CompletableFuture<String> future = new CompletableFuture<>();
-        messageProcessingPool.execute(() -> {
+        @Override
+        public CompletionStage<SubscriptionHandler> newSubscription(SubscriptionInfo info) {
+            return CompletableFuture.completedFuture(new SubscriptionHandler(info));
+        }
+
+        @Override
+        public CompletionStage<String> userMessageAsync(String message)
+                throws CreditsException, MessageException {
+            return notifyUserMessage(message);
+        }
+
+        /**
+         * Triggered by a client "sendMessage" call.
+         * The message encodes an order entry request by the client.
+         * In this basic implementation, we accept messages from any user
+         * to modify any portfolio.
+         */
+        private CompletableFuture<String> notifyUserMessage(String message)
+                throws MessageException, CreditsException {
+
+            //NOTE: since the order processing is potentially blocking (in a real scenario), we have 
+            //configured a dedicated ExecutorService. Moreover, to provide backpressure to the Server
+            //when the number of pending operations is too high, we have properly configured the
+            //messages thread pool in the adapters.xml configuration file for this adapter.
+
+            if (message == null) {
+                logger.warn("Null message received");
+                throw new MessageException("Null message received");
+            }
+
+            CompletableFuture<String> future = new CompletableFuture<>();
+            messageProcessingPool.execute(() -> {
+                try {
+                    String[] pieces = message.split("\\|");
+                    handlePortfolioMessage(pieces, message);
+                    future.complete("SUBMITTED");
+                } catch (CreditsException e) {
+                    future.completeExceptionally(e);
+                } catch (MessageException e) {
+                    future.completeExceptionally(e);
+                } catch (Throwable t) {
+                    future.completeExceptionally(t);
+                }
+                assert (future.isDone());
+            });
+
+            return future;
+        }
+
+
+
+        private void handlePortfolioMessage(String[] operation, String message)
+            throws MessageException, CreditsException {
+            if (operation.length != 4) {
+                logger.warn("Wrong message received: " + message);
+                throw new MessageException("Wrong message received");
+            }
+
+            int qty;
             try {
-                String[] pieces = message.split("\\|");
-                this.loadPortolioFeed();
-                this.handlePortfolioMessage(pieces,message);
-                future.complete("SUBMITTED");
-            } catch (CreditsException e) {
-                future.completeExceptionally(e);
-            } catch (NotificationException e) {
-                future.completeExceptionally(e);
-            } catch (Throwable t) {
-                future.completeExceptionally(t);
+                // Parse the received quantity to be an integer
+                qty = Integer.parseInt(operation[3]);
+            } catch (NumberFormatException e) {
+                logger.warn("Wrong message received (quantity must be an integer number): "
+                                + message);
+                throw new MessageException("Wrong message received");
             }
-            assert (future.isDone());
-        });
-
-        return future;
-    }
-
-    private void loadPortolioFeed() throws CreditsException {
-        if (this.portfolioFeed == null) {
-            try {
-                // Get the PortfolioFeedSimulator instance to bind it with this
-                // Metadata Adapter and call buy/sell operations on it
-                this.portfolioFeed = PortfolioFeedSimulator.feedMap
-                        .get(this.adapterSetId);
-            } catch (Throwable t) {
-                // It can happen if the Portfolio Data Adapter jar was not even
-                // included in the Adapter Set lib directory (the Portfolio
-                // Data Adapter could not be included in the Adapter Set as
-                // well)
-                logger.error("PortfolioDataAdapter class was not loaded: " + t);
-                throw new CreditsException(0, "No portfolio feed available",
-                        "No portfolio feed available");
+            if (qty <= 0) {
+                // Quantity can't be a negative number or 0; just ignore
+                logger.warn("Wrong message received (quantity must be greater than 0): "
+                                + message);
+                return;
             }
 
-            if (this.portfolioFeed == null) {
-                // The feed is not yet available on the static map, maybe the
-                // Portfolio Data Adapter was not included in the Adapter Set
-                logger.error("PortfolioFeedSimulator not found");
-                throw new CreditsException(0, "No portfolio feed available",
-                        "No portfolio feed available");
+            // get the needed portfolio
+            Portfolio portfolio = portfolioFeed.getPortfolio(operation[1]);
+            if (portfolio == null) {
+                // since the feed creates a new portfolio if no one is available for
+                // an id, this will never occur
+                logger.error("No such portfolio: " + operation[1]);
+                throw new CreditsException("Portfolio not available",
+                        0, "Portfolio not available");
             }
-        }
-    }
-
-    private void handlePortfolioMessage(String[] operation, String message)
-        throws NotificationException, CreditsException {
-        if (operation.length != 4) {
-            logger.warn("Wrong message received: " + message);
-            throw new NotificationException("Wrong message received");
-        }
-
-        int qty;
-        try {
-            // Parse the received quantity to be an integer
-            qty = Integer.parseInt(operation[3]);
-        } catch (NumberFormatException e) {
-            logger.warn("Wrong message received (quantity must be an integer number): "
-                            + message);
-            throw new NotificationException("Wrong message received");
-        }
-        if (qty <= 0) {
-            // Quantity can't be a negative number or 0; just ignore
-            logger.warn("Wrong message received (quantity must be greater than 0): "
-                            + message);
-            return;
-        }
-
-        // get the needed portfolio
-        Portfolio portfolio = this.portfolioFeed.getPortfolio(operation[1]);
-        if (portfolio == null) {
-            // since the feed creates a new portfolio if no one is available for
-            // an id, this will never occur
-            logger.error("No such portfolio: " + operation[1]);
-            throw new CreditsException(0, "Portfolio not available",
-                    "Portfolio not available");
-        }
-        if (operation[0].equals("BUY")) {
-            try {
-                // Call the buy operation on the selected portfolio
-                portfolio.buy(operation[2], qty);
-            } catch (Exception e) {
-                throw new CreditsException(1, e.getMessage());
+            if (operation[0].equals("BUY")) {
+                try {
+                    // Call the buy operation on the selected portfolio
+                    portfolio.buy(operation[2], qty);
+                } catch (Exception e) {
+                    throw new CreditsException(1, e.getMessage());
+                }
+            } else if (operation[0].equals("SELL")) {
+                try {
+                    // Call the sell operation on the selected portfolio
+                    portfolio.sell(operation[2], qty);
+                } catch (Exception e) {
+                    throw new CreditsException(1, e.getMessage());
+                }
+            } else {
+                throw new MessageException("Wrong operation specified");
             }
-        } else if (operation[0].equals("SELL")) {
-            try {
-                // Call the sell operation on the selected portfolio
-                portfolio.sell(operation[2], qty);
-            } catch (Exception e) {
-                throw new CreditsException(1, e.getMessage());
-            }
-        } else {
-            throw new NotificationException("Wrong operation specified");
         }
     }
 

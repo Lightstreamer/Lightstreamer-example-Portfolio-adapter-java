@@ -23,8 +23,8 @@ It can be referred to as a basic example for Data Adapter development.
 The similar Data Adapter for the JSON variant is also included.
 
 #### Portfolio Metadata Adapter
-A Metadata Adapter to be associated with the Portfolio Demo Data Adapters. This Metadata Adapter inherits from `LiteralBasedProvider` in [Lightstreamer Java In-Process Adapter SDK](https://github.com/Lightstreamer/Lightstreamer-lib-adapter-java-inprocess#literalbasedprovider-metadata-adapter) and just adds a simple support for order entry by implementing the NotifyUserMessage method, to handle "sendMessage" requests from the Portfolio Demo client.
-A confirmation response is sent by NotifyUserMessage to the client.
+A Metadata Adapter to be associated with the Portfolio Demo Data Adapters. This Metadata Adapter implements `MetadataAdapter` directly and adds a simple support for order entry by implementing the userMessageAsync method, to handle "sendMessage" requests from the Portfolio Demo client.
+A confirmation response is sent by userMessageAsync to the client.
 The communication to the Portfolio Feed Simulator is handled here.
 
 It should not be used as a reference for a real case of client-originated message handling, as no guaranteed delivery and no clustering support is shown.
@@ -51,16 +51,14 @@ The `adapters.xml` file for the Basic Portfolio Demo, should look like:
         <!-- Mandatory. Java class name of the adapter. -->
         <adapter_class>com.lightstreamer.examples.portfolio_demo.adapters.PortfolioMetadataAdapter</adapter_class>
 
-        <!-- configure the dedicated pool for notifyUserMessage call, see source code of PortfolioMetadataAdapter -->
+        <!-- configure the dedicated pool for userMessageAsync call, see source code of PortfolioMetadataAdapter -->
         <messages_pool>
             <max_pending_requests>100</max_pending_requests>
             <max_queue>100</max_queue>
         </messages_pool>
 
-        <!-- Optional, managed by the inherited LiteralBasedProvider.
-             See LiteralBasedProvider javadoc. -->
-        <param name="item_family_1">portfolio.*</param>
-        <param name="modes_for_item_family_1">COMMAND</param>
+        <!-- Ensure compatibility with old versions of the demo Clients. -->
+        <support_LiteralBased_subscriptions>Y</support_LiteralBased_subscriptions>
 
     </metadata_provider>
 
@@ -94,19 +92,14 @@ The `adapters.xml` file for the Portfolio Demo, should look like:
       <!-- Mandatory. Java class name of the adapter. -->
       <adapter_class>com.lightstreamer.examples.portfolio_demo.adapters.PortfolioMetadataAdapter</adapter_class>
 
-      <!-- configure the dedicated pool for notifyUserMessage call, see source code of PortfolioMetadataAdapter -->
+      <!-- configure the dedicated pool for userMessageAsync call, see source code of PortfolioMetadataAdapter -->
       <messages_pool>
           <max_pending_requests>100</max_pending_requests>
           <max_queue>100</max_queue>
       </messages_pool>
 
-      <!-- Optional, managed by the inherited LiteralBasedProvider.
-           See LiteralBasedProvider javadoc. -->
-      <param name="item_family_1">portfolio.*</param>
-      <param name="modes_for_item_family_1">COMMAND</param>
-
-      <param name="item_family_2">item.*</param>
-      <param name="modes_for_item_family_2">MERGE</param>
+      <!-- Ensure compatibility with old versions of the demo Clients. -->
+      <support_LiteralBased_subscriptions>Y</support_LiteralBased_subscriptions>
 
     </metadata_provider>
 
@@ -148,16 +141,14 @@ On the other hand, the `adapters.xml` file for the JSON Patch Portfolio Demo, sh
         <!-- Mandatory. Java class name of the adapter. -->
         <adapter_class>com.lightstreamer.examples.portfolio_demo.adapters.PortfolioMetadataAdapter</adapter_class>
 
-        <!-- configure the dedicated pool for notifyUserMessage call, see source code of PortfolioMetadataAdapter -->
+        <!-- configure the dedicated pool for userMessageAsync call, see source code of PortfolioMetadataAdapter -->
         <messages_pool>
             <max_pending_requests>100</max_pending_requests>
             <max_queue>100</max_queue>
         </messages_pool>
 
-        <!-- Optional, managed by the inherited LiteralBasedProvider.
-             See LiteralBasedProvider javadoc. -->
-        <param name="item_family_1">portfolio.*</param>
-        <param name="modes_for_item_family_1">MERGE</param>
+        <!-- Ensure compatibility with old versions of the demo Clients. -->
+        <support_LiteralBased_subscriptions>Y</support_LiteralBased_subscriptions>
 
     </metadata_provider>
 
@@ -187,25 +178,14 @@ Note that the Data Adapters needed by the various demos could also be deployed t
       <!-- Mandatory. Java class name of the adapter. -->
       <adapter_class>com.lightstreamer.examples.portfolio_demo.adapters.PortfolioMetadataAdapter</adapter_class>
 
-      <!-- configure the dedicated pool for notifyUserMessage call, see source code of PortfolioMetadataAdapter -->
+      <!-- configure the dedicated pool for userMessageAsync call, see source code of PortfolioMetadataAdapter -->
       <messages_pool>
           <max_pending_requests>100</max_pending_requests>
           <max_queue>100</max_queue>
       </messages_pool>
 
-      <!-- Optional, managed by the inherited LiteralBasedProvider.
-           See LiteralBasedProvider javadoc. -->
-      <param name="item_family_1">portfolio.*</param>
-      <param name="data_adapter_for_item_family_1">PORTFOLIO_ADAPTER</param>
-      <param name="modes_for_item_family_1">COMMAND</param>
-
-      <param name="item_family_2">portfolio.*</param>
-      <param name="data_adapter_for_item_family_2">PORTFOLIO_JSON_ADAPTER</param>
-      <param name="modes_for_item_family_2">MERGE</param>
-
-      <param name="item_family_3">item.*</param>
-      <param name="data_adapter_for_item_family_3">QUOTE_ADAPTER</param>
-      <param name="modes_for_item_family_3">MERGE</param>
+      <!-- Ensure compatibility with old versions of the demo Clients. -->
+      <support_LiteralBased_subscriptions>Y</support_LiteralBased_subscriptions>
 
     </metadata_provider>
 
@@ -300,13 +280,13 @@ Assuming Maven is installed and available in your path you can build the demo by
 
 ### Related Projects
 
-* [LiteralBasedProvider Metadata Adapter](https://github.com/Lightstreamer/Lightstreamer-lib-adapter-java-inprocess#literalbasedprovider-metadata-adapter)
 * [Lightstreamer - Stock-List Demo - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-StockList-adapter-java)
 * [Lightstreamer - Portfolio Demo - .NET Adapter](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-dotnet)
 
 ## Lightstreamer Compatibility Notes
 
-- Compatible with Lightstreamer SDK for Java In-Process Adapters since version 8.0.
+- Compatible with Lightstreamer SDK for Java In-Process Adapters since version 9.0.
+- For a version of this example compatible with Lightstreamer SDK for Java In-Process Adapters versions 8.x, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java/tree/XXXXXXXXXXXXXXXXXXXXX).
 - For a version of this example compatible with Lightstreamer SDK for Java In-Process Adapters versions 7.4.x, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java/tree/last_for_interface_7.4.x).
 - For a version of this example compatible with Lightstreamer SDK for Java In-Process Adapters version 7.3, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java/tree/pre_json).
 - For a version of this example compatible with Lightstreamer SDK for Java In-Process Adapters version 6.0, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-Portfolio-adapter-java/tree/pre_mvn).
